@@ -15,7 +15,7 @@ php composer.phar require --prefer-dist kotchuprik/yii2-instagram-authclient "*"
 or add
 
 ```json
-"kotchuprik/yii2-instagram-authclient": "*"
+"kotchuprik/yii2-odnoklassniki-authclient": "*"
 ```
 
 to the `require` section of your composer.json.
