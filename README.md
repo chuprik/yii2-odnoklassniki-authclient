@@ -33,7 +33,7 @@ and add the Odnoklassniki client to your auth clients.
     'authClientCollection' => [
         'class' => 'yii\authclient\Collection',
         'clients' => [
-            'instagram' => [
+            'odnoklassniki' => [
                 'class' => 'kotchuprik\authclient\Odnoklassniki',
                     'applicationKey' => 'odnoklassniki_app_public_key',
                     'consumerKey' => 'odnoklassniki_app_id',
