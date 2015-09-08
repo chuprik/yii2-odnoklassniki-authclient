@@ -36,8 +36,8 @@ and add the Odnoklassniki client to your auth clients.
             'odnoklassniki' => [
                 'class' => 'kotchuprik\authclient\Odnoklassniki',
                     'applicationKey' => 'odnoklassniki_app_public_key',
-                    'consumerKey' => 'odnoklassniki_app_id',
-                    'consumerSecret' => 'odnoklassniki_client_secret',
+                    'clientId' => 'odnoklassniki_app_id',
+                    'clientSecret' => 'odnoklassniki_client_secret',
                 ],
             ],
             // other clients
