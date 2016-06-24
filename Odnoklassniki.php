@@ -47,13 +47,29 @@ class Odnoklassniki extends OAuth2
         $params['access_token'] = $accessToken->getToken();
         $params['application_key'] = $this->applicationKey;
         $params['method'] = str_replace('/', '.', str_replace('api/', '', $url));
-
-        $first = 'application_key=' . $this->applicationKey . 'method=' . $params['method'];
-        $second = md5($params['access_token'] . $this->clientSecret);
-
-        $params['sig'] = md5($first . $second);
+        $params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
 
         return $this->sendRequest($method, $url, $params, $headers);
+    }
+    
+    /**
+     * Generates a signature
+     * @param $vars array
+     * @param $accessToken string
+     * @param $secret string
+     * @return string
+     */
+    protected function sig($vars, $accessToken, $secret)
+    {
+        ksort($vars);
+        $params = '';
+        foreach ($vars as $key => $value) {
+            if (in_array($key, ['sig', 'access_token'])) {
+                continue;
+            }
+            $params .= "$key=$value";
+        }
+        return md5($params . md5($accessToken . $secret));
     }
 
     /**
