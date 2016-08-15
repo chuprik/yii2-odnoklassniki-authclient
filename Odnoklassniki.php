@@ -36,7 +36,11 @@ class Odnoklassniki extends OAuth2
      */
     protected function initUserAttributes()
     {
-        return $this->api('api/users/getCurrentUser', 'GET');
+        $params = [];
+        $params['access_token'] = $this->accessToken->getToken();
+        $params['application_key'] = $this->applicationKey;
+        $params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
+        return $this->api('api/users/getCurrentUser', 'GET', $params);
     }
 
     /**
@@ -51,7 +55,7 @@ class Odnoklassniki extends OAuth2
 
         return $this->sendRequest($method, $url, $params, $headers);
     }
-    
+
     /**
      * Generates a signature
      * @param $vars array
