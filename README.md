@@ -38,6 +38,8 @@ and add the Odnoklassniki client to your auth clients.
                     'applicationKey' => 'odnoklassniki_app_public_key',
                     'clientId' => 'odnoklassniki_app_id',
                     'clientSecret' => 'odnoklassniki_client_secret',
+                    //'scope' => 'VALUABLE_ACCESS;LONG_ACCESS_TOKEN;GET_EMAIL', /* https://apiok.ru/en/ext/oauth/permissions */
+                    //'fields' => 'name,email'
                 ],
             ],
             // other clients

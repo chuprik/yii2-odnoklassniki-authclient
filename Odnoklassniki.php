@@ -14,17 +14,17 @@ class Odnoklassniki extends OAuth2
     /**
      * @inheritdoc
      */
-    public $authUrl = 'http://www.odnoklassniki.ru/oauth/authorize';
+    public $authUrl = 'https://connect.ok.ru/oauth/authorize';
 
     /**
      * @inheritdoc
      */
-    public $tokenUrl = 'https://api.odnoklassniki.ru/oauth/token.do';
+    public $tokenUrl = 'https://api.ok.ru/oauth/token.do';
 
     /**
      * @inheritdoc
      */
-    public $apiBaseUrl = 'http://api.odnoklassniki.ru';
+    public $apiBaseUrl = 'https://api.ok.ru';
 
     /**
      * @inheritdoc
@@ -32,11 +32,19 @@ class Odnoklassniki extends OAuth2
     public $scope = 'VALUABLE_ACCESS';
 
     /**
+     * @var string Fields to fetch (https://apiok.ru/en/dev/methods/rest/users/users.getCurrentUser)
+     */
+    public $fields = '';
+
+    /**
      * @inheritdoc
      */
     protected function initUserAttributes()
     {
         $params = [];
+        if (!empty($this->fields)) {
+            $params['fields']  = $this->fields;
+        }
         $params['access_token'] = $this->accessToken->getToken();
         $params['application_key'] = $this->applicationKey;
         $params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
@@ -90,5 +98,19 @@ class Odnoklassniki extends OAuth2
     protected function defaultTitle()
     {
         return 'Odnoklassniki';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultReturnUrl()
+    {
+        $params = $_GET;
+        unset($params['code']);
+        unset($params['state']);
+        unset($params['permissions_granted']);
+        $params[0] = \Yii::$app->controller->getRoute();
+
+        return \Yii::$app->getUrlManager()->createAbsoluteUrl($params);
     }
 }
