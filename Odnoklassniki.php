@@ -91,4 +91,14 @@ class Odnoklassniki extends OAuth2
     {
         return 'Odnoklassniki';
     }
+    
+    /**
+     * @inheritdoc
+     */
+    protected function defaultNormalizeUserAttributeMap()
+    {
+        return [
+            'id' => 'uid'
+        ];
+    }
 }
