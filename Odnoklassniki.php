@@ -14,17 +14,17 @@ class Odnoklassniki extends OAuth2
     /**
      * @inheritdoc
      */
-    public $authUrl = 'http://www.odnoklassniki.ru/oauth/authorize';
+    public $authUrl = 'https://connect.ok.ru/oauth/authorize';
 
     /**
      * @inheritdoc
      */
-    public $tokenUrl = 'https://api.odnoklassniki.ru/oauth/token.do';
+    public $tokenUrl = 'https://api.ok.ru/oauth/token.do';
 
     /**
      * @inheritdoc
      */
-    public $apiBaseUrl = 'http://api.odnoklassniki.ru';
+    public $apiBaseUrl = 'https://api.ok.ru';
 
     /**
      * @inheritdoc
@@ -46,14 +46,14 @@ class Odnoklassniki extends OAuth2
     /**
      * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
+    public function applyAccessTokenToRequest($request, $accessToken)
     {
-        $params['access_token'] = $accessToken->getToken();
-        $params['application_key'] = $this->applicationKey;
-        $params['method'] = str_replace('/', '.', str_replace('api/', '', $url));
-        $params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
-
-        return $this->sendRequest($method, $url, $params, $headers);
+        $data = $request->getData();
+        $data['access_token'] = $accessToken->getToken();
+        $data['application_key'] = $this->applicationKey;
+        $data['method'] = str_replace('/', '.', str_replace('api/', '', $request->url));
+        $data['sig'] = $this->sig($data, $data['access_token'], $this->clientSecret);
+        $request->setData($data);
     }
 
     /**
