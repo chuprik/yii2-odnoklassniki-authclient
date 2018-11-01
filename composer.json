@@ -1,8 +1,5 @@
 {
   "name": "crocone/yii2-odnoklassniki-authclient",
-  "description": "Odnoklassniki extenion for using via yii2-authclient",
-  "keywords": ["yii2", "authclient", "oauth", "odnoklassniki"],
-  "homepage": "http://github.com/kotchuprik/yii2-odnoklassniki-authclient",
   "require": {
     "yiisoft/yii2-authclient": "~2.0@dev"
   },
@@ -17,6 +14,5 @@
     "psr-4": {
       "crocone\\authclient\\": ""
     }
-  },
-  "minimum-stability": "dev"
+  }
 }
