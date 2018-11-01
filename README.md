@@ -9,13 +9,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist kotchuprik/yii2-odnoklassniki-authclient "*"
+php composer.phar require --prefer-dist CrocOne/yii2-odnoklassniki-authclient "*"
 ```
 
 or add
 
 ```json
-"kotchuprik/yii2-odnoklassniki-authclient": "*"
+"CrocOne/yii2-odnoklassniki-authclient": "*"
 ```
 
 to the `require` section of your composer.json.
