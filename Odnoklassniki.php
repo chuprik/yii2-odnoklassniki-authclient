@@ -29,7 +29,17 @@ class Odnoklassniki extends OAuth2
     /**
      * @inheritdoc
      */
-    public $scope = 'VALUABLE_ACCESS';
+    public $scope = 'VALUABLE_ACCESS'; 
+	
+	/**
+     * @inheritdoc
+     */
+    public $attributeNames = [
+		'last_name',
+		'first_name',
+		'age',
+		'location'
+	];
 
     /**
      * @inheritdoc
@@ -39,6 +49,7 @@ class Odnoklassniki extends OAuth2
         $params = [];
         $params['access_token'] = $this->accessToken->getToken();
         $params['application_key'] = $this->applicationKey;
+		$params['fields'] =  implode(',', $this->attributeNames);
         $params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
         return $this->api('api/users/getCurrentUser', 'GET', $params);
     }
