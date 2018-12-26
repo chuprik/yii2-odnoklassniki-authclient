@@ -6,99 +6,114 @@ use yii\authclient\OAuth2;
 
 class Odnoklassniki extends OAuth2
 {
-    /**
-     * @var string
-     */
-    public $applicationKey;
+	/**
+	 * @var string
+	 */
+	public $applicationKey;
 
-    /**
-     * @inheritdoc
-     */
-    public $authUrl = 'http://www.odnoklassniki.ru/oauth/authorize';
+	/**
+	 * @inheritdoc
+	 */
+	public $authUrl = 'https://connect.ok.ru/oauth/authorize';
 
-    /**
-     * @inheritdoc
-     */
-    public $tokenUrl = 'https://api.odnoklassniki.ru/oauth/token.do';
+	/**
+	 * @inheritdoc
+	 */
+	public $tokenUrl = 'https://api.ok.ru/oauth/token.do';
 
-    /**
-     * @inheritdoc
-     */
-    public $apiBaseUrl = 'http://api.odnoklassniki.ru';
+	/**
+	 * @inheritdoc
+	 */
+	public $apiBaseUrl = 'https://api.ok.ru';
 
-    /**
-     * @inheritdoc
-     */
-    public $scope = 'VALUABLE_ACCESS';
+	/**
+	 * @inheritdoc
+	 */
+	public $scope = 'VALUABLE_ACCESS';
 
-    /**
-     * @inheritdoc
-     */
-    protected function initUserAttributes()
-    {
-        $params = [];
-        $params['access_token'] = $this->accessToken->getToken();
-        $params['application_key'] = $this->applicationKey;
-        $params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
-        return $this->api('api/users/getCurrentUser', 'GET', $params);
-    }
+	/**
+	 * @var string Fields to fetch (https://apiok.ru/en/dev/methods/rest/users/users.getCurrentUser)
+	 */
+	public $attributeNames = [
+		'last_name',
+		'first_name',
+		'age',
+		'location'
+	];
 
-    /**
-     * @inheritdoc
-     */
-    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
-    {
-        $params['access_token'] = $accessToken->getToken();
-        $params['application_key'] = $this->applicationKey;
-        $params['method'] = str_replace('/', '.', str_replace('api/', '', $url));
-        $params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
+	/**
+	 * @inheritdoc
+	 */
+	protected function initUserAttributes()
+	{
+		$params = [];
+		$params['fields'] =  implode(',', $this->attributeNames);
+		$params['access_token'] = $this->accessToken->getToken();
+		$params['application_key'] = $this->applicationKey;
+		$params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
+		return $this->api('api/users/getCurrentUser', 'GET', $params);
+	}
 
-        return $this->sendRequest($method, $url, $params, $headers);
-    }
+	/**
+	 * @inheritdoc
+	 */
+	protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
+	{
+		$params['access_token'] = $accessToken->getToken();
+		$params['application_key'] = $this->applicationKey;
+		$params['method'] = str_replace('/', '.', str_replace('api/', '', $url));
+		$params['sig'] = $this->sig($params, $params['access_token'], $this->clientSecret);
 
-    /**
-     * Generates a signature
-     * @param $vars array
-     * @param $accessToken string
-     * @param $secret string
-     * @return string
-     */
-    protected function sig($vars, $accessToken, $secret)
-    {
-        ksort($vars);
-        $params = '';
-        foreach ($vars as $key => $value) {
-            if (in_array($key, ['sig', 'access_token'])) {
-                continue;
-            }
-            $params .= "$key=$value";
-        }
-        return md5($params . md5($accessToken . $secret));
-    }
+		return $this->sendRequest($method, $url, $params, $headers);
+	}
 
-    /**
-     * @inheritdoc
-     */
-    protected function defaultName()
-    {
-        return 'odnoklassniki';
-    }
+	/**
+	 * Generates a signature
+	 * @param $vars array
+	 * @param $accessToken string
+	 * @param $secret string
+	 * @return string
+	 */
+	protected function sig($vars, $accessToken, $secret)
+	{
+		ksort($vars);
+		$params = '';
+		foreach ($vars as $key => $value) {
+			if (in_array($key, ['sig', 'access_token'])) {
+				continue;
+			}
+			$params .= "$key=$value";
+		}
+		return md5($params . md5($accessToken . $secret));
+	}
 
-    /**
-     * @inheritdoc
-     */
-    protected function defaultTitle()
-    {
-        return 'Odnoklassniki';
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    protected function defaultNormalizeUserAttributeMap()
-    {
-        return [
-            'id' => 'uid'
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultName()
+	{
+		return 'odnoklassniki';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultTitle()
+	{
+		return 'Odnoklassniki';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultReturnUrl()
+	{
+		$params = $_GET;
+		unset($params['code']);
+		unset($params['state']);
+		unset($params['permissions_granted']);
+		$params[0] = \Yii::$app->controller->getRoute();
+
+		return \Yii::$app->getUrlManager()->createAbsoluteUrl($params);
+	}
 }
