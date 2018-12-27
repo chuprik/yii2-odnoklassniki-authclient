@@ -1,5 +1,5 @@
 {
-  "name": "crocone/yii2-odnoklassniki-authclient",
+  "name": "kotchuprik/yii2-odnoklassniki-authclient",
   "require": {
     "yiisoft/yii2-authclient": "~2.0@dev"
   },
